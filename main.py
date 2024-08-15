@@ -21,12 +21,12 @@ client = MongoClient(uri, server_api=ServerApi('1'))
 # Load variables
 peer = client["pwd"]["peers"]
 
-instance_peer = peer.findOne(
+instance_peer = peer.find_one(
     {
         "isRunning": False
     })
-username = instance_peer.username
-password = instance_peer.password
+username = instance_peer["username"]
+password = instance_peer["password"]
 
 # Defining default options for chrome browser
 options = Options()
@@ -80,7 +80,7 @@ def login_to_docker():
 #   while(a != "exit"):
 #       print("Enter exit to exit...")
 #       a = input("")
-    time.sleep(50)
+    time.sleep(30)
     try:
         # Click x button to close accept cookies popup
         cookies_div_id = 'onetrust-group-container'
@@ -215,13 +215,13 @@ def open_pwd_container():
     # Go to pwd
     driver.get(pwd_url)
 
-    instance_peer = peer.findOne({"username": username, "password": password})
+    instance_peer = peer.find_one({"username": username, "password": password})
     cookies = instance_peer.cookies
 
     for cookie in cookies:
         driver.add_cookie(cookie)
 
-    driver.get(instance_peer.instanceUrl)
+    driver.get(instance_peer["instanceUrl"])
 
     print("Sleeping 10 seconds...")
     time.sleep(10)
@@ -230,6 +230,7 @@ def open_pwd_container():
     print(driver.title)
     print(driver.current_url)
     print("")
+    input("waiting")
 
     if("ooc" in driver.current_url):
         print("Out of Capacity detected...")
