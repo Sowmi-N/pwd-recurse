@@ -155,6 +155,11 @@ def create_pwd_container():
         time.sleep(10)
         print("Getting to start url")
         #driver.get("https://labs.play-with-docker.com/")
+        logout_from_docker()
+        if(retry < 4):
+            login_to_docker()
+            create_pwd_container()
+            retry += 1
     else:
         layout_column = driver.find_element(By.CLASS_NAME, "layout-column")
         md_sidenav = layout_column.find_element(By.TAG_NAME, "md-sidenav")
@@ -189,15 +194,13 @@ def create_pwd_container():
         print("")
         cookies = driver.get_cookies()
         print(cookies[-1])
-        peer.update(
+        peer.update_one(
                 {
                     "name": username,
                     "password": password
                 },
                 {
-                    "$set": {"cookies": cookies},
-                    "$set": {"isRunning": True},
-                    "$set": {"instanceUrl": driver.current_url}
+                    "$set": {"cookies": cookies, "isRunning": True, "instanceUrl": driver.current_url}
                 })
         #stop = input("")
     except:
@@ -278,16 +281,18 @@ def open_pwd_container():
         print("")
         cookies = driver.get_cookies()
         print(cookies[-1])
-        peer.update(
+        peer.update_one(
                 {
                     "name": username,
                     "password": password
                 },
                 {
-                    "$set": {"cookies": cookies},
-                    "$set": {"isRunning": True}
+                    "$set": {"cookies": cookies, "isRunning": True, "instanceUrl": driver.current_url}
                 })
-        stop = input("")
+        #stop = input("")
+        logout_from_docker()
+        login_to_docker()
+        create_pwd_container()
     except:
         print("Failed to create new instance retrying..., sleep 10 seconds...")
         time.sleep(10)
