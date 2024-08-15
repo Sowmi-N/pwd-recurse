@@ -204,6 +204,9 @@ def create_pwd_container():
                     "$set": {"cookies": cookies, "isRunning": True, "instanceUrl": driver.current_url}
                 })
         #stop = input("")
+        logout_from_docker()
+        login_to_docker()
+        create_pwd_container()
     except:
         print("Failed to create new instance retrying..., sleep 10 seconds...")
         time.sleep(10)
