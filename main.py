@@ -85,7 +85,7 @@ def login_to_docker():
 #   while(a != "exit"):
 #       print("Enter exit to exit...")
 #       a = input("")
-    time.sleep(10)
+    time.sleep(1)
     try:
         # Click x button to close accept cookies popup
         cookies_div_id = 'onetrust-group-container'
@@ -104,7 +104,7 @@ def login_to_docker():
                     )
             print("Closing cookies popup")
             actions.move_to_element(accept_button).click().perform()
-            time.sleep(10)
+            time.sleep(1)
             #x_button.click()
     except Exception as error:
         print("Something went wrong, failed to click X butn. skipping it.", error)
@@ -134,7 +134,7 @@ def create_pwd_container():
     form_element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "landingForm")))
 
     # select start button
-    time.sleep(10)
+    time.sleep(5)
     start_button = form_element.find_element(By.TAG_NAME, "a")
     # Next click on start button
     print("Clicking the start button...")
@@ -165,10 +165,17 @@ def create_pwd_container():
             login_to_docker()
             create_pwd_container()
     else:
-        layout_column = driver.find_element(By.CLASS_NAME, "layout-column")
+        print("Trying to get layout_column")
+        #layout_column = driver.find_element(By.CLASS_NAME, "layout-column")
+        layout_column = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "layout-column")))
+
+        print("Trying to get md_sidenav")
         md_sidenav = layout_column.find_element(By.TAG_NAME, "md-sidenav")
+        print("Trying to get md_content_main")
         md_content_main = layout_column.find_element(By.TAG_NAME, "md-content")
+        print("Trying tp get md_content_sidenav")
         md_content_sidenav = md_sidenav.find_element(By.TAG_NAME, "md-content")
+        print("Trying to get add button")
         add_button = md_content_sidenav.find_element(By.TAG_NAME, "button")
     #start_button = form_element.find_element(By.TAG_NAME, "a")
     print("Clicking add new instance button...")
@@ -203,6 +210,8 @@ def create_pwd_container():
         print("")
         cookies = driver.get_cookies()
         print(cookies[-1])
+        print("")
+        print("#####  pushing cookies   #####")
         client["pwd"]["peers"].update_one(
                 {
                     "name": username,
@@ -213,6 +222,7 @@ def create_pwd_container():
                 })
         #stop = input("")
         #logout_from_docker()
+        print("######   done pushing cookies!   #####")
         driver.delete_all_cookies()
         logout_from_docker()
         open_pwd_container()
@@ -325,7 +335,7 @@ def open_pwd_container():
 def logout_from_docker():
     # Open docker hub (assume already logged in)
     driver.get(docker_hub_url)
-    time.sleep(10)
+    time.sleep(5)
     try:
         # Click x button to close accept cookies popup
         cookies_div_id = 'onetrust-group-container'
@@ -368,11 +378,11 @@ def logout_from_docker():
         print("clicking signout")
         actions.move_to_element(sign_out).click().perform()
         #sign_out.click()
-        time.sleep(10)
+        time.sleep(1)
     driver.close()
 
 try:
-    time.sleep(20)
+    time.sleep(10)
     login_to_docker()
     create_pwd_container()
     logout_from_docker()
