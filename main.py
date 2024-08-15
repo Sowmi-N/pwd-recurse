@@ -166,16 +166,22 @@ def create_pwd_container():
             create_pwd_container()
     else:
         print("Trying to get layout_column")
+        print" Sleeping 3 seconds..")
+        time.sleep(3)
         #layout_column = driver.find_element(By.CLASS_NAME, "layout-column")
         layout_column = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "layout-column")))
 
         print("Trying to get md_sidenav")
         md_sidenav = layout_column.find_element(By.TAG_NAME, "md-sidenav")
         print("Trying to get md_content_main")
+        print" Sleeping 3 seconds..")
+        time.sleep(3)
         md_content_main = layout_column.find_element(By.TAG_NAME, "md-content")
         print("Trying tp get md_content_sidenav")
         md_content_sidenav = md_sidenav.find_element(By.TAG_NAME, "md-content")
         print("Trying to get add button")
+        print" Sleeping 3 seconds..")
+        time.sleep(3)
         add_button = md_content_sidenav.find_element(By.TAG_NAME, "button")
     #start_button = form_element.find_element(By.TAG_NAME, "a")
     print("Clicking add new instance button...")
@@ -188,29 +194,37 @@ def create_pwd_container():
     print("Getting ssh command...")
     try:
         print("trying to get md_card by id")
+
+        print" Sleeping 3 seconds..")
+        time.sleep(3)
         md_card = layout_column.find_element(By.TAG_NAME, "md-card")
-        print("tryimg to get input  by id")
+        print("trying to get input  by id")
         input_3 = md_card.find_element(By.ID, "input_3")
         print(input_3.get_attribute("value"))
 
         print("trying to get terminal instance")
 
+        print" Sleeping 3 seconds..")
+        time.sleep(3)
         terminal_instance = layout_column.find_element(By.CLASS_NAME, "terminal-instance")
         print("trying to get terminal")
+        print" Sleeping 3 seconds..")
+        time.sleep(3)
         terminal = terminal_instance.find_element(By.CLASS_NAME, "terminal")
         command = "kill -9 $(ps aux | grep 'sshd: /usr' | awk '{print $1}') && /usr/sbin/sshd -o PermitRootLogin=yes -o PrintMotd=yes -o AllowAgentForwarding=yes -o AllowTcpForwarding=yes -o X11Forwarding=yes -o X11DisplayOffset=10 -o X11UseLocalhost=no"
         print("Clicking terminal....")
+        print" Sleeping 3 seconds..")
+        time.sleep(3)
         actions.move_to_element(terminal).click().perform()
         print("Sending commands...")
+        print" Sleeping 3 seconds..")
+        time.sleep(3)
         terminal.send_keys(command, Keys.RETURN)
         print("Started docker")
+        print" Sleeping 3 seconds..")
+        time.sleep(3)
         # Now we reached desired state so stay here
-        print(driver.get_cookies())
-        print(driver.current_url)
-        print("")
         cookies = driver.get_cookies()
-        print(cookies[-1])
-        print("")
         print("#####  pushing cookies   #####")
         client["pwd"]["peers"].update_one(
                 {
@@ -223,7 +237,11 @@ def create_pwd_container():
         #stop = input("")
         #logout_from_docker()
         print("######   done pushing cookies!   #####")
+        print" Sleeping 3 seconds..")
+        time.sleep(3)
         driver.delete_all_cookies()
+        print" Sleeping 3 seconds..")
+        time.sleep(3)
         logout_from_docker()
         open_pwd_container()
     except:
@@ -243,10 +261,11 @@ def create_pwd_container():
 
 def open_pwd_container():
     # Go to pwd
-    driver.get(instance_peer["instanceUrl"])
+    old_instance_peer = client["pwd"]["peers"].find_one({"username": username, "password": password})
+    cookies = old_instance_peer["cookies"]
 
-    instance_peer = client["pwd"]["peers"].find_one({"username": username, "password": password})
-    cookies = instance_peer["cookies"]
+    print("##### Getting cookies!    #####")
+    print(cookies)
 
     for cookie in cookies:
         driver.add_cookie(cookie)
