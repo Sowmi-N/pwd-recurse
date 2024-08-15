@@ -10,9 +10,23 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import ElementNotInteractableException
 import time
 
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
+
+uri = "mongodb+srv://sowmi-n9491:pwd_usr@cluster0.r5tmqfw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+
+# Create a new client and connect to the server
+client = MongoClient(uri, server_api=ServerApi('1'))
+
 # Load variables
-username = "oxilotronx"
-password = "sowmiyancloud@123"
+peer = client["pwd"]["peers"]
+
+instance_peer = peer.findOne(
+    {
+        "isRunning": False
+    })
+username = instance_peer.username
+password = instance_peer.password
 
 # Defining default options for chrome browser
 options = Options()
@@ -139,7 +153,7 @@ def create_pwd_container():
         print("Sleep 10 seconds..")
         time.sleep(10)
         print("Getting to start url")
-        driver.get("https://labs.play-with-docker.com/")
+        #driver.get("https://labs.play-with-docker.com/")
     else:
         layout_column = driver.find_element(By.CLASS_NAME, "layout-column")
         md_sidenav = layout_column.find_element(By.TAG_NAME, "md-sidenav")
@@ -174,6 +188,15 @@ def create_pwd_container():
         print("")
         cookies = driver.get_cookies()
         print(cookies[-1])
+        peer.update(
+                {
+                    "name": username,
+                    "password": password
+                },
+                {
+                    $set: {"cookies": cookies},
+                    $set: {"isRunning": True}
+                })
         stop = input("")
     except:
         print("Failed to create new instance retrying..., sleep 10 seconds...")
