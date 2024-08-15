@@ -194,6 +194,7 @@ def create_pwd_container():
         print("")
         cookies = driver.get_cookies()
         print(cookies[-1])
+        peer = client["pwd"]["peers"]
         peer.update_one(
                 {
                     "name": username,
@@ -219,6 +220,7 @@ def open_pwd_container():
     # Go to pwd
     driver.get(pwd_url)
 
+    peer = client["pwd"]["peers"]
     instance_peer = peer.find_one({"username": username, "password": password})
     cookies = instance_peer.cookies
 
@@ -281,6 +283,7 @@ def open_pwd_container():
         print("")
         cookies = driver.get_cookies()
         print(cookies[-1])
+        peer = client["pwd"]["peers"]
         peer.update_one(
                 {
                     "name": username,
