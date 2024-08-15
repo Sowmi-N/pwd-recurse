@@ -205,8 +205,8 @@ def create_pwd_container():
                     "$set": {"cookies": cookies, "isRunning": True, "instanceUrl": driver.current_url}
                 })
         #stop = input("")
-        #logout_from_docker()
-        driver.delete_all_cookies()
+        logout_from_docker()
+        #driver.delete_all_cookies()
         login_to_docker()
         create_pwd_container()
     except:
@@ -342,26 +342,27 @@ def logout_from_docker():
     except Exception as error:
         print("Something went wrong, failed to click X butn. skipping it.", error)
 
-    # Click user profile icon
-    user_profile_xpath = '/html/body/div[2]/div/header/div/div/div[2]/button[2]/div'
-    user_profile_css = 'button.MuiIconButton-root:nth-child(6)'
-    user_profile = WebDriverWait(driver, to).until(
-            EC.visibility_of_element_located((By.CSS_SELECTOR, user_profile_css))
-            )
-    print("Clicking user profile")
-    actions.move_to_element(user_profile).click().perform()
-    #user_profile.click()
+    if(cookies_div):
+        # Click user profile icon
+        user_profile_xpath = '/html/body/div[2]/div/header/div/div/div[2]/button[2]/div'
+        user_profile_css = 'button.MuiIconButton-root:nth-child(6)'
+        user_profile = WebDriverWait(driver, to).until(
+                EC.visibility_of_element_located((By.CSS_SELECTOR, user_profile_css))
+                )
+        print("Clicking user profile")
+        actions.move_to_element(user_profile).click().perform()
+        #user_profile.click()
 
-    # Click signout button to sign out
-    sign_out_xpath = '/html/body/div[2]/div/header/div/div/div[2]/div[4]/div[3]/div/nav/button'
-    sign_out_css = '.css-10dwyil'
-    sign_out = WebDriverWait(driver, to).until(
-            EC.visibility_of_element_located((By.CSS_SELECTOR, sign_out_css))
-            )
-    print("clicking signout")
-    actions.move_to_element(sign_out).click().perform()
-    #sign_out.click()
-    time.sleep(20)
+        # Click signout button to sign out
+        sign_out_xpath = '/html/body/div[2]/div/header/div/div/div[2]/div[4]/div[3]/div/nav/button'
+        sign_out_css = '.css-10dwyil'
+        sign_out = WebDriverWait(driver, to).until(
+                EC.visibility_of_element_located((By.CSS_SELECTOR, sign_out_css))
+                )
+        print("clicking signout")
+        actions.move_to_element(sign_out).click().perform()
+        #sign_out.click()
+        time.sleep(20)
     driver.close()
 
 try:
