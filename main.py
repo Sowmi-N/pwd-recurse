@@ -155,7 +155,8 @@ def create_pwd_container():
         time.sleep(10)
         print("Getting to start url")
         #driver.get("https://labs.play-with-docker.com/")
-        logout_from_docker()
+        #logout_from_docker()
+        driver.delete_all_cookies()
         if(retry < 4):
             login_to_docker()
             create_pwd_container()
@@ -204,7 +205,8 @@ def create_pwd_container():
                     "$set": {"cookies": cookies, "isRunning": True, "instanceUrl": driver.current_url}
                 })
         #stop = input("")
-        logout_from_docker()
+        #logout_from_docker()
+        driver.delete_all_cookies()
         login_to_docker()
         create_pwd_container()
     except:
@@ -246,7 +248,8 @@ def open_pwd_container():
         print("Sleep 10 seconds..")
         time.sleep(10)
         print("Getting to start url")
-        logout_from_docker()
+        #logout_from_docker()
+        driver.delete_all_cookies()
         if(retry < 4):
             login_to_docker()
             create_pwd_container()
@@ -296,7 +299,8 @@ def open_pwd_container():
                     "$set": {"cookies": cookies, "isRunning": True, "instanceUrl": driver.current_url}
                 })
         #stop = input("")
-        logout_from_docker()
+        #logout_from_docker()
+        driver.delete_all_cookies()
         login_to_docker()
         create_pwd_container()
     except:
