@@ -52,6 +52,7 @@ driver.implicitly_wait(to)
 docker_login_url = "https://login.docker.com/u/login"
 pwd_url = "https://labs.play-with-docker.com/"
 docker_hub_url = "https://hub.docker.com"
+retry = 0
 
 def login_to_docker():
     # Go to docker login page
@@ -237,6 +238,11 @@ def open_pwd_container():
         print("Sleep 10 seconds..")
         time.sleep(10)
         print("Getting to start url")
+        logout_from_docker()
+        if(retry < 4):
+            login_to_docker()
+            create_pwd_container()
+            retry++;
         #driver.get("https://labs.play-with-docker.com/")
     else:
         layout_column = driver.find_element(By.CLASS_NAME, "layout-column")
