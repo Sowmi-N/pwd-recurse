@@ -228,7 +228,7 @@ def create_pwd_container():
         print("#####  pushing cookies   #####")
         client["pwd"]["peers"].update_one(
                 {
-                    "name": username,
+                    "username": username,
                     "password": password
                 },
                 {
@@ -327,7 +327,7 @@ def open_pwd_container():
         print(cookies[-1])
         client["pwd"]["peers"].update_one(
                 {
-                    "name": username,
+                    "username": username,
                     "password": password
                 },
                 {
@@ -373,6 +373,8 @@ def logout_from_docker():
                     )
             print("Closing cookies popup")
             actions.move_to_element(accept_button).click().perform()
+            print("sleep 3 seconds")
+            time.sleep(3)
             #x_button.click()
     except Exception as error:
         print("Something went wrong, failed to click X butn. skipping it.", error)
@@ -386,6 +388,8 @@ def logout_from_docker():
                 )
         print("Clicking user profile")
         actions.move_to_element(user_profile).click().perform()
+        print("sleeping 3 seconds")
+        time.sleep(3)
         #user_profile.click()
 
         # Click signout button to sign out
@@ -398,7 +402,7 @@ def logout_from_docker():
         actions.move_to_element(sign_out).click().perform()
         #sign_out.click()
         time.sleep(1)
-    driver.close()
+    #driver.close()
 
 try:
     time.sleep(10)
