@@ -80,7 +80,7 @@ def login_to_docker():
 #   while(a != "exit"):
 #       print("Enter exit to exit...")
 #       a = input("")
-    time.sleep(30)
+    time.sleep(10)
     try:
         # Click x button to close accept cookies popup
         cookies_div_id = 'onetrust-group-container'
@@ -99,7 +99,7 @@ def login_to_docker():
                     )
             print("Closing cookies popup")
             actions.move_to_element(accept_button).click().perform()
-            time.sleep(50)
+            time.sleep(10)
             #x_button.click()
     except Exception as error:
         print("Something went wrong, failed to click X butn. skipping it.", error)
@@ -202,10 +202,10 @@ def create_pwd_container():
                     "$set": {"cookies": cookies, "isRunning": True, "instanceUrl": driver.current_url}
                 })
         #stop = input("")
+        #logout_from_docker()
+        driver.delete_all_cookies()
         logout_from_docker()
-        #driver.delete_all_cookies()
-        login_to_docker()
-        create_pwd_container()
+        open_pwd_container()
     except:
         print("Failed to create new instance retrying..., sleep 10 seconds...")
         time.sleep(10)
@@ -313,7 +313,7 @@ def open_pwd_container():
 def logout_from_docker():
     # Open docker hub (assume already logged in)
     driver.get(docker_hub_url)
-    time.sleep(50)
+    time.sleep(10)
     try:
         # Click x button to close accept cookies popup
         cookies_div_id = 'onetrust-group-container'
@@ -356,7 +356,7 @@ def logout_from_docker():
         print("clicking signout")
         actions.move_to_element(sign_out).click().perform()
         #sign_out.click()
-        time.sleep(20)
+        time.sleep(10)
     driver.close()
 
 try:
