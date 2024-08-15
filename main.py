@@ -52,7 +52,6 @@ driver.implicitly_wait(to)
 docker_login_url = "https://login.docker.com/u/login"
 pwd_url = "https://labs.play-with-docker.com/"
 docker_hub_url = "https://hub.docker.com"
-retry = 0
 
 def login_to_docker():
     # Go to docker login page
@@ -157,10 +156,9 @@ def create_pwd_container():
         #driver.get("https://labs.play-with-docker.com/")
         #logout_from_docker()
         driver.delete_all_cookies()
-        if(retry < 4):
+        for i in range(0, 5):
             login_to_docker()
             create_pwd_container()
-            retry += 1
     else:
         layout_column = driver.find_element(By.CLASS_NAME, "layout-column")
         md_sidenav = layout_column.find_element(By.TAG_NAME, "md-sidenav")
@@ -195,8 +193,7 @@ def create_pwd_container():
         print("")
         cookies = driver.get_cookies()
         print(cookies[-1])
-        peer = client["pwd"]["peers"]
-        peer.update_one(
+        client["pwd"]["peers"].update_one(
                 {
                     "name": username,
                     "password": password
@@ -225,9 +222,8 @@ def open_pwd_container():
     # Go to pwd
     driver.get(pwd_url)
 
-    peer = client["pwd"]["peers"]
-    instance_peer = peer.find_one({"username": username, "password": password})
-    cookies = instance_peer.cookies
+    instance_peer = client["pwd"]["peers"].find_one({"username": username, "password": password})
+    cookies = instance_peer["cookies"]
 
     for cookie in cookies:
         driver.add_cookie(cookie)
@@ -250,10 +246,9 @@ def open_pwd_container():
         print("Getting to start url")
         #logout_from_docker()
         driver.delete_all_cookies()
-        if(retry < 4):
+        for i in range(0, 5):
             login_to_docker()
             create_pwd_container()
-            retry += 1
         #driver.get("https://labs.play-with-docker.com/")
     else:
         layout_column = driver.find_element(By.CLASS_NAME, "layout-column")
@@ -289,8 +284,7 @@ def open_pwd_container():
         print("")
         cookies = driver.get_cookies()
         print(cookies[-1])
-        peer = client["pwd"]["peers"]
-        peer.update_one(
+        client["pwd"]["peers"].update_one(
                 {
                     "name": username,
                     "password": password
