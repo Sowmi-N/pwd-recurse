@@ -57,6 +57,10 @@ def login_to_docker():
     # Go to docker login page
     driver.get(docker_login_url)
 
+    driver.delete_all_cookies()
+
+    driver.get(docker_login_url)
+
     # Get the current window handle
     current_window = driver.current_window_handle
 
