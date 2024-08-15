@@ -242,7 +242,7 @@ def open_pwd_container():
         if(retry < 4):
             login_to_docker()
             create_pwd_container()
-            retry++;
+            retry += 1
         #driver.get("https://labs.play-with-docker.com/")
     else:
         layout_column = driver.find_element(By.CLASS_NAME, "layout-column")
