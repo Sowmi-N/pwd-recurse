@@ -59,13 +59,14 @@ def login_to_docker():
 
     driver.delete_all_cookies()
 
-    driver.get(docker_login_url)
+    driver.refresh()
 
     # Get the current window handle
     current_window = driver.current_window_handle
 
     # Now fill the username into username input
     #username_xpath = '/html/body/div/main/section/div[1]/div/div/div[1]/div/form/div[1]/div/div/div/div'
+    print("trying getting user element")
     username_ele = WebDriverWait(driver, to).until(
             EC.visibility_of_element_located((By.ID, "username"))
             )
@@ -179,11 +180,16 @@ def create_pwd_container():
 
     print("Getting ssh command...")
     try:
+        print("trying to get md_card by id")
         md_card = layout_column.find_element(By.TAG_NAME, "md-card")
+        print("tryimg to get input  by id")
         input_3 = md_card.find_element(By.ID, "input_3")
         print(input_3.get_attribute("value"))
 
+        print("trying to get terminal instance")
+
         terminal_instance = layout_column.find_element(By.CLASS_NAME, "terminal-instance")
+        print("trying to get terminal")
         terminal = terminal_instance.find_element(By.CLASS_NAME, "terminal")
         command = "kill -9 $(ps aux | grep 'sshd: /usr' | awk '{print $1}') && /usr/sbin/sshd -o PermitRootLogin=yes -o PrintMotd=yes -o AllowAgentForwarding=yes -o AllowTcpForwarding=yes -o X11Forwarding=yes -o X11DisplayOffset=10 -o X11UseLocalhost=no"
         print("Clicking terminal....")
@@ -213,9 +219,12 @@ def create_pwd_container():
     except:
         print("Failed to create new instance retrying..., sleep 10 seconds...")
         time.sleep(10)
+        create_pwd_container()
         #continue
     # Find the close session button
+    print("trying to get md_toolbar")
     md_toolbar = md_sidenav.find_element(By.TAG_NAME, "md-toolbar")
+    print("trying to get close button")
     close_button = md_toolbar.find_element(By.TAG_NAME, "button")
     print("Pressing close button...")
     actions.move_to_element(close_button).click().perform()
@@ -224,15 +233,14 @@ def create_pwd_container():
 
 def open_pwd_container():
     # Go to pwd
-    driver.get(pwd_url)
+    driver.get(instance_peer["instanceUrl"])
 
     instance_peer = client["pwd"]["peers"].find_one({"username": username, "password": password})
     cookies = instance_peer["cookies"]
 
     for cookie in cookies:
         driver.add_cookie(cookie)
-
-    driver.get(instance_peer["instanceUrl"])
+    driver.refresh()
 
     print("Sleeping 10 seconds...")
     time.sleep(10)
