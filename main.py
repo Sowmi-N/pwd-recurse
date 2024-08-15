@@ -194,8 +194,91 @@ def create_pwd_container():
                     "password": password
                 },
                 {
-                    $set: {"cookies": cookies},
-                    $set: {"isRunning": True}
+                    "$set": {"cookies": cookies},
+                    "$set": {"isRunning": True},
+                    "$set": {"instanceUrl": driver.current_url}
+                })
+        #stop = input("")
+    except:
+        print("Failed to create new instance retrying..., sleep 10 seconds...")
+        time.sleep(10)
+        #continue
+    # Find the close session button
+    md_toolbar = md_sidenav.find_element(By.TAG_NAME, "md-toolbar")
+    close_button = md_toolbar.find_element(By.TAG_NAME, "button")
+    print("Pressing close button...")
+    actions.move_to_element(close_button).click().perform()
+    print("Waiting until session closes...")
+    time.sleep(10)
+
+def open_pwd_container():
+    # Go to pwd
+    driver.get(pwd_url)
+
+    instance_peer = peer.findOne({"username": username, "password": password})
+    cookies = instance_peer.cookies
+
+    for cookie in cookies:
+        driver.add_cookie(cookie)
+
+    driver.get(instance_peer.instanceUrl)
+
+    print("Sleeping 10 seconds...")
+    time.sleep(10)
+    print("")
+
+    print(driver.title)
+    print(driver.current_url)
+    print("")
+
+    if("ooc" in driver.current_url):
+        print("Out of Capacity detected...")
+        print("Sleep 10 seconds..")
+        time.sleep(10)
+        print("Getting to start url")
+        #driver.get("https://labs.play-with-docker.com/")
+    else:
+        layout_column = driver.find_element(By.CLASS_NAME, "layout-column")
+        md_sidenav = layout_column.find_element(By.TAG_NAME, "md-sidenav")
+        md_content_main = layout_column.find_element(By.TAG_NAME, "md-content")
+        md_content_sidenav = md_sidenav.find_element(By.TAG_NAME, "md-content")
+        add_button = md_content_sidenav.find_element(By.TAG_NAME, "button")
+    #start_button = form_element.find_element(By.TAG_NAME, "a")
+    print("Clicking add new instance button...")
+    print(add_button.text)
+    actions.move_to_element(add_button).click().perform()
+
+    print("Sleeping 20 seconds....")
+    time.sleep(20)
+
+    print("Getting ssh command...")
+    try:
+        md_card = layout_column.find_element(By.TAG_NAME, "md-card")
+        input_3 = md_card.find_element(By.ID, "input_3")
+        print(input_3.get_attribute("value"))
+
+        terminal_instance = layout_column.find_element(By.CLASS_NAME, "terminal-instance")
+        terminal = terminal_instance.find_element(By.CLASS_NAME, "terminal")
+        command = "kill -9 $(ps aux | grep 'sshd: /usr' | awk '{print $1}') && /usr/sbin/sshd -o PermitRootLogin=yes -o PrintMotd=yes -o AllowAgentForwarding=yes -o AllowTcpForwarding=yes -o X11Forwarding=yes -o X11DisplayOffset=10 -o X11UseLocalhost=no"
+        print("Clicking terminal....")
+        actions.move_to_element(terminal).click().perform()
+        print("Sending commands...")
+        terminal.send_keys(command, Keys.RETURN)
+        print("Started docker")
+        # Now we reached desired state so stay here
+        print(driver.get_cookies())
+        print(driver.current_url)
+        print("")
+        cookies = driver.get_cookies()
+        print(cookies[-1])
+        peer.update(
+                {
+                    "name": username,
+                    "password": password
+                },
+                {
+                    "$set": {"cookies": cookies},
+                    "$set": {"isRunning": True}
                 })
         stop = input("")
     except:
@@ -209,6 +292,7 @@ def create_pwd_container():
     actions.move_to_element(close_button).click().perform()
     print("Waiting until session closes...")
     time.sleep(10)
+
 
 def logout_from_docker():
     # Open docker hub (assume already logged in)
@@ -263,6 +347,8 @@ try:
     login_to_docker()
     create_pwd_container()
     logout_from_docker()
+    driver.delete_all_cookies()
+    open_pwd_container()
 finally:
     # Finally close driver
     driver.quit()
