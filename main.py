@@ -243,8 +243,8 @@ def create_pwd_container():
         driver.delete_all_cookies()
         print("Sleeping 3 seconds..")
         time.sleep(3)
-        logout_from_docker()
-        open_pwd_container()
+        #logout_from_docker()
+        #open_pwd_container()
     except:
         print("Failed to create new instance retrying..., sleep 10 seconds...")
         time.sleep(10)
@@ -267,7 +267,8 @@ def open_pwd_container():
 
     print("##### Getting cookies!    #####")
     print(cookies)
-
+    driver.get(pwd_url)
+    driver.delete_all_cookies()
     for cookie in cookies:
         driver.add_cookie(cookie)
     driver.refresh()
