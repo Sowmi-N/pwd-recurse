@@ -225,6 +225,7 @@ def create_pwd_container():
         time.sleep(3)
         # Now we reached desired state so stay here
         cookies = driver.get_cookies()
+        ssh_command = input_3.get_attribute("value").split()
         print("#####  pushing cookies   #####")
         client["pwd"]["peers"].update_one(
                 {
@@ -232,7 +233,7 @@ def create_pwd_container():
                     "password": password
                 },
                 {
-                    "$set": {"cookies": cookies, "isRunning": True, "instanceUrl": driver.current_url}
+                    "$set": {"cookies": cookies, "isRunning": True, "instanceUrl": driver.current_url, "instanceIp": ssh_command[-1]}
                 })
         #stop = input("")
         #logout_from_docker()
@@ -325,13 +326,14 @@ def open_pwd_container():
         print("")
         cookies = driver.get_cookies()
         print(cookies[-1])
+        ssh_command = input_3.get_attribute("value")
         client["pwd"]["peers"].update_one(
                 {
                     "username": username,
                     "password": password
                 },
                 {
-                    "$set": {"cookies": cookies, "isRunning": True, "instanceUrl": driver.current_url}
+                    "$set": {"cookies": cookies, "isRunning": True, "instanceUrl": driver.current_url, "instanceIp": ssh_command[-1]}
                 })
         #stop = input("")
         #logout_from_docker()
@@ -410,6 +412,9 @@ try:
     create_pwd_container()
     logout_from_docker()
     driver.delete_all_cookies()
+    print("Refreshing")
+    driver.refresh()
+    time.sleep(3)
     open_pwd_container()
 finally:
     # Finally close driver
