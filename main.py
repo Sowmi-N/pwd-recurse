@@ -122,6 +122,18 @@ def create_pwd_container():
     # Click the login button (button1)
     print("Clicking login button...")
     WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.ID, "btnGroupDrop1"))).click()
+    #print("sleeping 3 seconds")
+    #time.sleep(3)
+    #original_window = driver.current_window_handle
+    #WebDriverWait(driver, 10).until(EC.number_of_windows_to_be(2))
+    #for window_handle in driver.window_handles:
+    #        if window_handle != original_window:
+    #            driver.switch_to.window(window_handle)
+    #            break
+    #print(driver.title)
+    #WebDriverWait(driver, 10).until(EC.number_of_windows_to_be(1))
+    #driver.switch_to.window(original_window)
+    #print(driver.title)
     # Get the docker button
     button2 = driver.find_element(By.CLASS_NAME, "ng-binding")
 
