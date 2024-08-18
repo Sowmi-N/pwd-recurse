@@ -263,14 +263,14 @@ def create_pwd_container():
         create_pwd_container()
         #continue
     # Find the close session button
-    print("trying to get md_toolbar")
-    md_toolbar = md_sidenav.find_element(By.TAG_NAME, "md-toolbar")
-    print("trying to get close button")
-    close_button = md_toolbar.find_element(By.TAG_NAME, "button")
-    print("Pressing close button...")
-    actions.move_to_element(close_button).click().perform()
-    print("Waiting until session closes...")
-    time.sleep(10)
+    #print("trying to get md_toolbar")
+    #md_toolbar = md_sidenav.find_element(By.TAG_NAME, "md-toolbar")
+    #print("trying to get close button")
+    #close_button = md_toolbar.find_element(By.TAG_NAME, "button")
+    #print("Pressing close button...")
+    #actions.move_to_element(close_button).click().perform()
+    #print("Waiting until session closes...")
+    #time.sleep(10)
 
 def open_pwd_container():
     # Go to pwd
@@ -284,6 +284,7 @@ def open_pwd_container():
     for cookie in cookies:
         driver.add_cookie(cookie)
     driver.refresh()
+    driver.get(old_instance_peer["instanceUrl"])
 
     print("Sleeping 10 seconds...")
     time.sleep(10)
