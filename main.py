@@ -223,7 +223,8 @@ def create_pwd_container():
         print("Sleeping 3 seconds..")
         time.sleep(3)
         terminal = terminal_instance.find_element(By.CLASS_NAME, "terminal")
-        command = "kill -9 $(ps aux | grep 'sshd: /usr' | awk '{print $1}') && /usr/sbin/sshd -o PermitRootLogin=yes -o PrintMotd=yes -o AllowAgentForwarding=yes -o AllowTcpForwarding=yes -o X11Forwarding=yes -o X11DisplayOffset=10 -o X11UseLocalhost=no"
+        #command = "kill -9 $(ps aux | grep 'sshd: /usr' | awk '{print $1}') && /usr/sbin/sshd -o PermitRootLogin=yes -o PrintMotd=yes -o AllowAgentForwarding=yes -o AllowTcpForwarding=yes -o X11Forwarding=yes -o X11DisplayOffset=10 -o X11UseLocalhost=no"
+        command = "docker run sowmin/pwd:a"
         print("Clicking terminal....")
         print("Sleeping 3 seconds..")
         time.sleep(3)
